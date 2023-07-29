@@ -45,8 +45,8 @@ export const fetchData=async(stockSymbol,resolution,from,to)=>{
 }
 
 export const fetchPrediction=async(stockSymbol,filter)=>{
-    console.log(`http://localhost:5050/${stockSymbol}/${filter}`)
-    const url=`http://localhost:5050/${stockSymbol}/${filter}`
+    console.log(`http://localhost:5000/${stockSymbol}/${filter}`)
+    const url=`http://localhost:5000/${stockSymbol}/${filter}`
     const response=await fetch(url);
     if(!response.ok){
         const message=`An error occured: ${response.status}`;

@@ -17,6 +17,7 @@ app.use('/db',db)
 
 
 app.get("/:stock/:filter",(req,res)=>{
+    console.log("Here")
     if(req.params.filter!="undefined"){
         var out="400"
         console.log(req.params.filter)

@@ -7,7 +7,11 @@ const bcrypt=require("bcryptjs")
 db.use(express.json())
 
 const User=mongoose.model("UserInfo")
-const url="mongodb+srv://avanish:12345@cluster0.lnuvd0t.mongodb.net/?retryWrites=true&w=majority"
+
+const atlasUserName =''
+const altlasPassword=''
+
+const url=`mongodb+srv://${atlasUserName}:${altlasPassword}@cluster0.lnuvd0t.mongodb.net/?retryWrites=true&w=majority`
 mongoose.connect(url,{useNewUrlParser:true}).then(()=>console.log("Connected to the Backend")).catch((e)=>console.log(err))
 
 
