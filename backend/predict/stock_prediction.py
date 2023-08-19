@@ -1,9 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import pandas as pd
-import pandas_datareader as web
 import datetime as dt
+import yfinance as yf
 from datetime import timedelta
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
@@ -12,19 +11,26 @@ import os
 from keras.layers import Dense,Dropout,LSTM
 data=[]
 prediction_days=60
-#load data
-print("Started..")
 def get_data(company,offset):
         #company='TSLA'   #globabl company 'FB' 'GOOGL'  Indian:"IDEA.NS" for national 'IDEA.BS' for bombay
 
-        start=dt.datetime(2010,1,1)  
-        end=dt.datetime.now()-timedelta(days=1)
-        
-        
-        data=web.DataReader(company,'yahoo',start,end)
+        off={'1M':120,'1W':95,'1Y':209}
+        end=""
+        # model=keras.models.load_model(company)
+        if offset=="1W":
+                end=dt.datetime.now()+timedelta(weeks=1)
+        elif offset=="1M":
+                end=dt.datetime.now()
+        elif offset=="1Y":
+                end=dt.datetime.now()
+                end.replace(end.year+1)
 
+        start=end-timedelta(days=off[offset])
+        start=start.strftime("%Y-%m-%d")
+        end=end.strftime("%Y-%m-%d")
+
+        data=yf.download(company,start,end)
         #prepare data
-        print("Preparing Data..")
 
         scaler=MinMaxScaler(feature_range=(0,1))
         scaled_data=scaler.fit_transform(data['Close'].values.reshape(-1,1))
@@ -70,9 +76,10 @@ def predict(company,offset):
                 elif offset=="1Y":
                     end=dt.datetime.now()
                     end.replace(end.year+1)
-                
                 start=end-timedelta(days=off[offset])
-                data=web.DataReader(company,'yahoo',start,end)
+                start=start.strftime("%Y-%m-%d")
+                end=end.strftime("%Y-%m-%d")
+                data=yf.download(company,start,end)
                 scaler=MinMaxScaler(feature_range=(0,1))
                 scaled_data=scaler.fit_transform(data['Close'].values.reshape(-1,1))
                 x_train=[]
@@ -80,10 +87,7 @@ def predict(company,offset):
                 real_data=np.array(x_train)
                 
                 real_data=np.reshape(real_data,(real_data.shape[0],real_data.shape[1],1))
-                
-
                 prediction=model.predict(real_data)
-
                 prediction=scaler.inverse_transform(prediction)
             
                 return prediction
@@ -91,6 +95,11 @@ def predict(company,offset):
             get_data(company,offset)
                 
 if(sys.argv[2]!="undefined"):
-	print(">>>>>>",predict(sys.argv[1],sys.argv[2]))
+    predicted=predict(sys.argv[1],sys.argv[2])
+    print("DONE")
+    print(">>>>>>",predicted)
+    
+
+
 sys.stdout.flush()
 

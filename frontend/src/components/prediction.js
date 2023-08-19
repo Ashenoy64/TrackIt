@@ -2,26 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { chartConfig } from '../const/config';
 import { fetchPrediction } from '../api/stockAPI';
 import ChartFilter from './chartfilter';
-import Card from './card';
+
+
 const Predict = ({stock}) => {
+
+
 
   const [predict,setPrediction]=useState(0);
   const [filter,setFilter]=useState("1W");
   useEffect(()=>{
-      const result=fetchPrediction(stock,filter);
-      
-      result.then(data=>data["output"].trim())
-      result.then(data=>setPrediction(data["output"].substring(2,8)))
-      if(result){
-        setPrediction("Calculating..")
-      }
-      else{
+      let result = null;
 
-        setPrediction(predict+1);
+    const fetchPredictionOnce = async () => {
+     {
+        result = await fetchPrediction(stock, filter);
+
+        if (result) {
+          const trimmedOutput = result["output"].trim();
+          setPrediction(trimmedOutput.substring(2, 8));
+        } else {
+          setPrediction(predict + 1);
+        }
       }
-  },[filter,stock])
+    };
+
+    fetchPredictionOnce();
+  },[filter,stock,predict])
   return (
-    <Card>
+    <div className='w-full h-28 rounded-md relative p-8 border-2 bg-white border-neutral my-8 md:my-0'>
     <ul className='flex absolute top-2 right-2 z-40'>
         {Object.keys(chartConfig).map((item)=>{
             return <li key={item}>
@@ -31,21 +39,16 @@ const Predict = ({stock}) => {
         </li>
         })}
     </ul>
-    <span className='absolute bottom-20'>
+    <span className=' relative bottom-2'>
             {stock}
         </span>
  
-            
-        <div className='w-full h-full p-5 justify-around'>
-          
-            <span className='text-xl xl:text:2xl 2xl:text-4xl flex items-center'>
-                    
-                    Prediction ${predict}
-                    
-            
+        <div className=''>
+            <span className='text-xl '>
+                    Prediction {predict}
             </span>
           </div>
-    </Card>
+    </div>
   )
 }
 

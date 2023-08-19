@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import {mockSearch} from "../const/mock"
 import { searchSymbol } from '../api/stockAPI'
 import {MagnifyingGlassIcon,XMarkIcon} from "@heroicons/react/24/solid"
 import Searchresult from './searchresult'
@@ -25,7 +24,7 @@ const updateBestMatch=async ()=>{
     }
 }
   return (
-    <div className='flex items-center my-4 border-2 rounded-md relative z-50 w-96 bg-white border-neutral-200'>
+    <div className='flex items-center my-4 border-2 rounded-md relative z-50 md:w-96 bg-white border-neutral-200'>
         <input type="text" value={input} className="w-full px-4 py-2 focus:outline-none rounded-md" placeholder='Search stock' onChange={(event)=>{
             setInput(event.target.value);
         }}

@@ -19,7 +19,7 @@ export const stockDetails=async(stockSymbol)=>{
         const message=`An error occured: ${response.status}`;
         throw new Error(message);
     }
-    return await response.json();
+    return response.json();
 }
 
 export const stockQuote=async(stockSymbol)=>{
@@ -45,7 +45,8 @@ export const fetchData=async(stockSymbol,resolution,from,to)=>{
 }
 
 export const fetchPrediction=async(stockSymbol,filter)=>{
-    console.log(`http://localhost:5000/${stockSymbol}/${filter}`)
+    if(filter==undefined)
+        filter="1W"
     const url=`http://localhost:5000/${stockSymbol}/${filter}`
     const response=await fetch(url);
     if(!response.ok){

@@ -2,8 +2,8 @@ const mongoose=require("mongoose")
 
 const UserDetailSchema= new mongoose.Schema(
     {
-        username:{type:String,unique:true},
-        email:String,
+        username:String,
+        email:{type:String,unique:true},
         password:String,
     },
     {

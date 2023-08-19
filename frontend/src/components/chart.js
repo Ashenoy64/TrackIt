@@ -10,8 +10,10 @@ import StockContex from './stockContex';
 
 const Chart = () => {
     const [data,setData]=useState(historicData);
-    const [filter,setFilter]=useState("1Y");
+    const [filter,setFilter]=useState("1W");
     const {stockSymbol}=useContext(StockContex);
+    
+
     useEffect(()=>{
         const getDateRange=()=>{
             const {days,weeks,months,years}=chartConfig[filter];
@@ -23,32 +25,31 @@ const Chart = () => {
             
             return{startTimestampUnix,endTimeStampUnix};
         }
+        const formatData=(data)=>{
+            return data.c.map((item,index)=>{
+                return{
+                    value:item.toFixed(2),
+                    date:convertUnixTimestampToDate(data.t[index])
+                }
+            })
+        }
         const updateChart=async ()=>{
                 try{
                     const r=getDateRange();
-                    console.log(r);
+
                     const resolution=chartConfig[filter].resolution;
                     const result=await fetchData(stockSymbol,resolution,r.startTimestampUnix,r.endTimeStampUnix);
-                    console.log(result);
+
                     setData(formatData(result));
                 }
                 catch(error){
                     setData({});
-                    console.log(error)
                 }
                 
         }
         updateChart();
     },[stockSymbol,filter])
-    const formatData=(data)=>{
-        console.log(filter)
-        return data.c.map((item,index)=>{
-            return{
-                value:item.toFixed(2),
-                date:convertUnixTimestampToDate(data.t[index])
-            }
-        })
-    }
+    
   return (
     <>
     <ul className='flex absolute top-2 right-2 z-40'>
@@ -66,8 +67,6 @@ const Chart = () => {
             <XAxis dataKey={"date"}/>
                     <YAxis domain={["dataMin","dataMax"]}/>
                 <Area type="monotone" dataKey="value" stroke='#312e81' fillOpacity={1} strokeWidth={0.5}>
-                    
-                 
                 </Area>
             </AreaChart>
         </ResponsiveContainer>
