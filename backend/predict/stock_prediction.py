@@ -1,6 +1,5 @@
 import numpy as np
 import sys
-import pandas as pd
 import datetime as dt
 import yfinance as yf
 from datetime import timedelta
